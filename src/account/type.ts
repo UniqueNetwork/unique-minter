@@ -16,9 +16,4 @@ export type BaseWalletEntity<T> = {
   isMintingEnabled: boolean;
   changeChain(network: string): Promise<void>;
   getAccounts(): Promise<Map<string, BaseWalletType<T>>>;
-  getSignature(
-    unsignedTxPayload: UnsignedTxPayloadResponse,
-    account: Account,
-    meta: any,
-  ): any;
 };

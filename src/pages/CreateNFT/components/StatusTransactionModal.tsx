@@ -80,8 +80,11 @@ const StagesWrapper = styled.div`
   grid-template-columns: 24px 1fr;
   align-items: flex-start;
   grid-column-gap: var(--gap);
-  grid-row-gap: var(--gap);
+  grid-row-gap: calc(var(--gap) * 2);
   align-items: center;
+  @media (min-width: 768px) {
+    min-width: 500px;
+  }
 `;
 
 const StageDescription = styled.div`

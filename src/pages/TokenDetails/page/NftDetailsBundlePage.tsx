@@ -398,6 +398,16 @@ export const NftDetailsBundlePage = () => {
                     onClick={() => unnestTokenAction()}
                   />
                 )}
+                {isBundleToken() && (
+                  <Button
+                    title="Nest this token"
+                    wide={deviceSize === DeviceSize.xs}
+                    onClick={() => {
+                      logUserEvent(UserEvents.CREATE_BUNDLE);
+                      setCurrentModal(isFractional ? 'nest-refungible' : 'create-bundle');
+                    }}
+                  />
+                )}
               </>
             )
           }

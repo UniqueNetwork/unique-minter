@@ -132,6 +132,7 @@ export const NestRefungibleModal = <T extends TBaseToken>({
       collectionId: token.collectionId,
       tokenId: token.tokenId,
       address: selectedAccount.address,
+      from: selectedAccount.address,
       to: Address.nesting.idsToAddress(parentCollectionId, parentTokenId),
       amount,
     });
@@ -164,6 +165,7 @@ export const NestRefungibleModal = <T extends TBaseToken>({
           collectionId,
           tokenId,
           address: selectedAccount.address,
+          from: selectedAccount.address,
           to,
           amount,
         },

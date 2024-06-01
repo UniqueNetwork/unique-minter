@@ -7,6 +7,7 @@ import {
   ExtrinsicResultResponse,
   CreateCollectionBody,
   CreateCollectionParsed,
+  WithOptionalAddress,
 } from '@unique-nft/sdk';
 import { Address } from '@unique-nft/utils';
 
@@ -19,7 +20,12 @@ export function useMetamaskCollectionCreate() {
   const [submitWaitResultError, setSubmitWaitResultError] = useState<string>();
   const [isLoadingSubmitResult, setIsLoadingSubmitResult] = useState(false);
   const getEstimateGas = useCallback(
-    async ({ address, tokenPrefix, description, name }: CreateCollectionBody) => {
+    async ({
+      address,
+      tokenPrefix,
+      description,
+      name,
+    }: Omit<CreateCollectionBody, 'address'> & WithOptionalAddress) => {
       const collectionHelpers = await CollectionHelpersFactory(provider?.getSigner());
 
       const fee = await collectionHelpers.collectionCreationFee();

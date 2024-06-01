@@ -7,6 +7,7 @@ import {
   ExtrinsicResultResponse,
   BurnRefungibleParsed,
   BurnRefungibleBody,
+  WithOptionalAddress,
 } from '@unique-nft/sdk';
 
 import { useMetamaskFee } from './useMetamaskFee';
@@ -20,7 +21,12 @@ export function useMetamaskBurnRefungibleToken() {
   const [isLoadingSubmitResult, setIsLoadingSubmitResult] = useState(false);
 
   const getEstimateGas = useCallback(
-    async ({ address, collectionId, tokenId, amount }: BurnRefungibleBody) => {
+    async ({
+      address,
+      collectionId,
+      tokenId,
+      amount,
+    }: Omit<BurnRefungibleBody, 'address'> & WithOptionalAddress) => {
       if (!amount) {
         return Promise.resolve(new BN(0));
       }
@@ -48,11 +54,14 @@ export function useMetamaskBurnRefungibleToken() {
     | {
         extrinsicError: ExtrinsicResultResponse<any>;
       },
-    { payload: BurnRefungibleBody; senderAddress?: string | undefined }
+    {
+      payload: Omit<BurnRefungibleBody, 'address'> & WithOptionalAddress;
+      senderAddress?: string | undefined;
+    }
   > = async ({
     payload,
   }: {
-    payload: BurnRefungibleBody;
+    payload: Omit<BurnRefungibleBody, 'address'> & WithOptionalAddress;
     senderAddress?: string | undefined;
   }) => {
     setIsLoadingSubmitResult(true);

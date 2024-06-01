@@ -7,6 +7,7 @@ import {
   ExtrinsicResultResponse,
   SetCollectionPropertiesBody,
   SetCollectionPropertiesParsed,
+  WithOptionalAddress,
 } from '@unique-nft/sdk';
 import { Utf16 } from '@unique-nft/utils/string';
 
@@ -19,7 +20,10 @@ export function useMetamaskCollectionSetProperties() {
   const [submitWaitResultError, setSubmitWaitResultError] = useState<string>();
   const [isLoadingSubmitResult, setIsLoadingSubmitResult] = useState(false);
   const getEstimateGas = useCallback(
-    async ({ address, collectionId }: SetCollectionPropertiesBody) => {
+    async ({
+      address,
+      collectionId,
+    }: Omit<SetCollectionPropertiesBody, 'address'> & WithOptionalAddress) => {
       const nftFactory = await UniqueNFTFactory(collectionId, provider?.getSigner());
 
       const estimateGas = await nftFactory.estimateGas.setCollectionProperties([], {

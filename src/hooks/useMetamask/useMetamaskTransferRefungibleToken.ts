@@ -7,7 +7,9 @@ import {
   ExtrinsicResultResponse,
   TransferRefungibleTokenParsed,
   TransferRefungibleTokenRequest,
+  WithOptionalAddress,
 } from '@unique-nft/sdk';
+import { Address } from '@unique-nft/utils';
 
 import { useMetamaskFee } from './useMetamaskFee';
 import { getCrossStruct2 } from './utils';
@@ -26,15 +28,17 @@ export function useMetamaskTransferRefungibleToken() {
       collectionId,
       tokenId,
       amount,
-    }: TransferRefungibleTokenRequest) => {
+    }: Omit<TransferRefungibleTokenRequest, 'address'>) => {
       if (!to || !amount) {
         return Promise.resolve(new BN(0));
       }
+      console.log(from, to, collectionId, tokenId);
 
       const rftFactory = await UniqueRefungibleTokenFactory(
-        { collectionId, tokenId },
+        Address.nesting.idsToAddress(collectionId, tokenId),
         provider?.getSigner(),
       );
+      console.log(rftFactory, collectionId, tokenId);
 
       const estimateGas = await rftFactory.estimateGas.transferFromCross(
         getCrossStruct2(from),
@@ -55,11 +59,14 @@ export function useMetamaskTransferRefungibleToken() {
     | {
         extrinsicError: ExtrinsicResultResponse<any>;
       },
-    { payload: TransferRefungibleTokenRequest; senderAddress?: string | undefined }
+    {
+      payload: Omit<TransferRefungibleTokenRequest, 'address'> & WithOptionalAddress;
+      senderAddress?: string | undefined;
+    }
   > = async ({
     payload,
   }: {
-    payload: TransferRefungibleTokenRequest;
+    payload: Omit<TransferRefungibleTokenRequest, 'address'> & WithOptionalAddress;
     senderAddress?: string | undefined;
   }) => {
     setIsLoadingSubmitResult(true);

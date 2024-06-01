@@ -24,7 +24,7 @@ export const useAccountBalanceWithdraw = ({
     submitWaitResultError,
     async submitWaitResult({ address, amount }: WithdrawMutationArgs) {
       try {
-        const unsignedTxPayloadBody = await api.extrinsics.build({
+        const unsignedTxPayloadBody = await api.extrinsic.build({
           section: 'evm',
           method: 'withdraw',
           address,
@@ -36,7 +36,7 @@ export const useAccountBalanceWithdraw = ({
           senderAccount?.address,
         );
 
-        await api.extrinsics.submit({
+        await api.extrinsic.submit({
           signerPayloadJSON: unsignedTxPayloadBody.signerPayloadJSON,
           signature,
         });

@@ -1,4 +1,4 @@
-import { ExtrinsicResultResponse, IMutation } from '@unique-nft/sdk';
+import { ExtrinsicResultResponse, IMutation, WithOptionalAddress } from '@unique-nft/sdk';
 import { useMutation, useQueryClient } from 'react-query';
 
 import { useAccounts } from '@app/hooks';
@@ -6,7 +6,9 @@ import { UNKNOWN_ERROR_MSG } from '@app/api/restApi/hooks/constants';
 
 import { queryKeys } from '../keysConfig';
 
-export const useExtrinsicFlow = <A, R>(mutation: IMutation<A, R>) => {
+export const useExtrinsicFlow = <A extends WithOptionalAddress, R>(
+  mutation: IMutation<A, R>,
+) => {
   const { signMessage } = useAccounts();
   const { selectedAccount } = useAccounts();
   const queryClient = useQueryClient();
@@ -42,7 +44,10 @@ export const useExtrinsicFlow = <A, R>(mutation: IMutation<A, R>) => {
   const submitResultMutationQueryResult = useMutation<
     ExtrinsicResultResponse<R> | undefined,
     { extrinsicError: ExtrinsicResultResponse<any> } | Error,
-    { payload: A; senderAddress?: string | undefined },
+    {
+      payload: A;
+      senderAddress?: string | undefined;
+    },
     unknown
   >(submitWaitResult, {
     onSuccess: () => {

@@ -3,7 +3,7 @@ import { UniqueNFTFactory } from '@unique-nft/solidity-interfaces';
 import { ethers } from 'ethers';
 import { BN } from 'bn.js';
 import { UseMutateAsyncFunction } from 'react-query';
-import { ExtrinsicResultResponse } from '@unique-nft/sdk';
+import { ExtrinsicResultResponse, WithOptionalAddress } from '@unique-nft/sdk';
 import { Address } from '@unique-nft/utils';
 
 import { NestTokenBody, TokenId } from '@app/types/Api';
@@ -39,11 +39,14 @@ export function useMetamaskNestToken() {
     | {
         extrinsicError: ExtrinsicResultResponse<any>;
       },
-    { payload: NestTokenBody; senderAddress?: string | undefined }
+    {
+      payload: Omit<NestTokenBody, 'address'> & WithOptionalAddress;
+      senderAddress?: string | undefined;
+    }
   > = async ({
     payload,
   }: {
-    payload: NestTokenBody;
+    payload: Omit<NestTokenBody, 'address'> & WithOptionalAddress;
     senderAddress?: string | undefined;
   }) => {
     setIsLoadingSubmitResult(true);

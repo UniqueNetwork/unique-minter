@@ -1,5 +1,5 @@
 import { QueriesResults, useQueries } from 'react-query';
-import { AllBalancesResponse, Sdk } from '@unique-nft/sdk';
+import Sdk, { AllBalancesResponse } from '@unique-nft/sdk';
 
 import { calculateSliceBalance } from './utils';
 import { queryKeys } from '../keysConfig';
@@ -15,7 +15,7 @@ export const useAccountBalancesService = (
         queryKey: queryKeys.account.chain(`${baseUrl}-${address}`),
         queryFn: async () => {
           try {
-            const api = new Sdk({ baseUrl, signer: null });
+            const api = new Sdk({ baseUrl });
             const balance = await api.balance.get({ address: address! });
             return Promise.resolve(calculateSliceBalance(balance));
           } catch (e) {

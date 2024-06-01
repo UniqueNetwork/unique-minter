@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { ApolloProvider } from '@apollo/client';
-import { IClient, Sdk } from '@unique-nft/sdk';
+import { IClient, Sdk } from '@unique-nft/sdk/full';
 
 import { Chain } from '@app/types';
 import { defaultChainKey } from '@app/utils/configParser';
@@ -25,7 +25,6 @@ export const ApiWrapper = ({ children }: ChainProviderProps) => {
     () =>
       new Sdk({
         baseUrl: currentChain.apiEndpoint,
-        signer: null,
         maximumNumberOfStatusRequests: MAX_STATUS_REQUESTS,
       }),
   );
@@ -50,7 +49,6 @@ export const ApiWrapper = ({ children }: ChainProviderProps) => {
     setApiInstance(
       new Sdk({
         baseUrl: currentChain.apiEndpoint,
-        signer: null,
         maximumNumberOfStatusRequests: MAX_STATUS_REQUESTS,
       }),
     );

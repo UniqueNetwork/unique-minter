@@ -8,6 +8,7 @@ import {
   CreateTokenBody,
   TokenId,
   CreateMultipleTokensBody,
+  WithOptionalAddress,
 } from '@unique-nft/sdk';
 import { Address } from '@unique-nft/utils';
 import {
@@ -29,7 +30,13 @@ export function useMetamaskCreateMultipleTokens() {
   const { api } = useApi();
 
   const getEstimateGas = useCallback(
-    async ({ address, collectionId }: CreateTokenBody) => {
+    async ({
+      address,
+      collectionId,
+    }: Omit<CreateTokenBody, 'address'> & WithOptionalAddress) => {
+      if (!address) {
+        return new BN(0);
+      }
       const nftFactory = await UniqueNFTFactory(collectionId, provider?.getSigner());
 
       const toCross = Address.extract.ethCrossAccountId(address);

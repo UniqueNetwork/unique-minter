@@ -7,6 +7,7 @@ import {
   ExtrinsicResultResponse,
   DestroyCollectionBody,
   DestroyCollectionParsed,
+  WithOptionalAddress,
 } from '@unique-nft/sdk';
 
 import { useMetamaskFee } from './useMetamaskFee';
@@ -19,7 +20,10 @@ export function useMetamaskBurnCollection() {
   const [isLoadingSubmitResult, setIsLoadingSubmitResult] = useState(false);
 
   const getEstimateGas = useCallback(
-    async ({ address, collectionId }: DestroyCollectionBody) => {
+    async ({
+      address,
+      collectionId,
+    }: Omit<DestroyCollectionBody, 'address'> & WithOptionalAddress) => {
       const collectionHelper = await CollectionHelpersFactory(provider?.getSigner());
 
       const collectionAddress = collectionHelper.collectionAddress(collectionId);

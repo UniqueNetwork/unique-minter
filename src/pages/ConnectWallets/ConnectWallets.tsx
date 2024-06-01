@@ -2,16 +2,21 @@ import { useCallback, useContext, useState } from 'react';
 import styled from 'styled-components';
 import { Ethereum } from '@unique-nft/utils/extension';
 
+import SubWalletIcon from 'static/icons/subwallet.svg';
+import EnkriptIcon from 'static/icons/enkrypt.svg';
+import NovaWalletIcon from 'static/icons/nova_icon_radial.svg';
+
 import { Icon, Modal, Button } from '@app/components';
 import { logUserEvent, UserEvents } from '@app/utils/logUserEvent';
 import {
   CreateAccountModal,
   ExtensionMissingModal,
+  Extensions,
   ImportViaJSONAccountModal,
   ImportViaQRCodeAccountModal,
   ImportViaSeedAccountModal,
 } from '@app/pages';
-import { useAccounts } from '@app/hooks';
+import { DeviceSize, useAccounts, useDeviceSize } from '@app/hooks';
 import { ConnectWalletModalContext } from '@app/context';
 
 enum AccountModal {
@@ -27,7 +32,7 @@ export const ConnectWallets = () => {
     ConnectWalletModalContext,
   );
   const [currentModal, setCurrentModal] = useState<AccountModal | undefined>();
-  const [missingExtension, setMissingExtension] = useState<'Polkadot' | 'Metamask'>();
+  const [missingExtension, setMissingExtension] = useState<Extensions>();
   const { walletsCenter } = useAccounts();
 
   const onCreateAccountClick = useCallback(() => {
@@ -58,7 +63,7 @@ export const ConnectWallets = () => {
 
   const handleConnectToPolkadotExtension = async () => {
     try {
-      await walletsCenter.connectWallet('polkadot');
+      await walletsCenter.connectWallet('polkadot-js');
       await walletsCenter.connectWallet('keyring');
       setIsOpenConnectWalletModal(false);
     } catch (e: any) {
@@ -66,6 +71,48 @@ export const ConnectWallets = () => {
       setCurrentModal(AccountModal.EXTENSION_MISSING);
     }
   };
+
+  const handleConnectToTalismanExtension = async () => {
+    try {
+      await walletsCenter.connectWallet('talisman');
+      setIsOpenConnectWalletModal(false);
+    } catch (e: any) {
+      setMissingExtension('Talisman');
+      setCurrentModal(AccountModal.EXTENSION_MISSING);
+    }
+  };
+
+  const handleConnectToSubWalletExtension = async () => {
+    try {
+      await walletsCenter.connectWallet('subwallet-js');
+      setIsOpenConnectWalletModal(false);
+    } catch (e: any) {
+      setMissingExtension('SubWallet');
+      setCurrentModal(AccountModal.EXTENSION_MISSING);
+    }
+  };
+
+  const handleConnectToEnkryptExtension = async () => {
+    try {
+      await walletsCenter.connectWallet('enkrypt');
+      setIsOpenConnectWalletModal(false);
+    } catch (e: any) {
+      setMissingExtension('Enkrypt');
+      setCurrentModal(AccountModal.EXTENSION_MISSING);
+    }
+  };
+
+  const handleConnectToNovaWallet = async () => {
+    try {
+      await walletsCenter.connectWallet('polkadot-js');
+      setIsOpenConnectWalletModal(false);
+    } catch (e: any) {
+      setMissingExtension('NovaWallet');
+      setCurrentModal(AccountModal.EXTENSION_MISSING);
+    }
+  };
+
+  const isMobile = DeviceSize.sm <= useDeviceSize();
 
   return (
     <>
@@ -76,28 +123,45 @@ export const ConnectWallets = () => {
           setIsOpenConnectWalletModal(false);
         }}
       >
-        <p>Create or import an existing one in any suitable way:</p>
-        <Buttons>
-          <Button
-            title="Seed phrase"
-            role="primary"
-            onClick={handleOpenModal(AccountModal.VIA_SEED)}
-          />
-          <Button title="New substrate account" onClick={onCreateAccountClick} />
-          <Button
-            title="Backup JSON file"
-            onClick={handleOpenModal(AccountModal.VIA_JSON)}
-          />
-        </Buttons>
-
-        <p>You can also create or connect wallets via these providers:</p>
+        <p>
+          Choose how you want to connect. If you don&apos;t have a wallet, you can select
+          a provider and create one.
+        </p>
         <Wallets>
-          <WalletItem onClick={handleConnectToPolkadotExtension}>
-            <Icon size={40} name="polkadot-wallet" /> <span>Polkadot.js</span>
-          </WalletItem>
-          <WalletItem onClick={handleConnectToMetamask}>
-            <Icon size={40} name="metamask-wallet" /> <span>Metamask</span>
-          </WalletItem>
+          {!window.walletExtension?.isNovaWallet && (
+            <>
+              <WalletItem onClick={handleConnectToPolkadotExtension}>
+                <Icon size={40} name="polkadot-wallet" /> <span>Polkadot.js</span>
+              </WalletItem>
+              <WalletItem onClick={handleConnectToMetamask}>
+                <Icon size={40} name="metamask-wallet" /> <span>Metamask</span>
+              </WalletItem>
+              <WalletItem onClick={handleConnectToTalismanExtension}>
+                <Icon size={40} name="talisman-wallet" /> <span>Talisman</span>
+              </WalletItem>
+              <WalletItem onClick={handleConnectToSubWalletExtension}>
+                <Icon file={SubWalletIcon} size={40} />
+                <span>SubWallet</span>
+              </WalletItem>
+              <WalletItem onClick={handleConnectToEnkryptExtension}>
+                <Icon file={EnkriptIcon} size={40} />
+                <span>Enkrypt</span>
+              </WalletItem>
+              {!isMobile && <div></div>}
+              {isMobile && (
+                <WalletItem href="https://novawallet.io" target="_blank">
+                  <Icon file={NovaWalletIcon} size={40} />
+                  <span>Nova Wallet</span>
+                </WalletItem>
+              )}
+            </>
+          )}
+          {window.walletExtension?.isNovaWallet && (
+            <WalletItem onClick={handleConnectToNovaWallet}>
+              <Icon file={NovaWalletIcon} size={40} />
+              <span>Nova Wallet</span>
+            </WalletItem>
+          )}
         </Wallets>
       </Modal>
 
@@ -131,9 +195,17 @@ const Wallets = styled.div`
   flex-wrap: wrap;
   margin-top: var(--prop-gap);
   gap: calc(var(--prop-gap) / 2);
+  & > a {
+    width: calc(50% - 6px);
+  }
+  @media (max-width: 768px) {
+    & > a {
+      width: 100%;
+    }
+  }
 `;
 
-const WalletItem = styled.div`
+const WalletItem = styled.a`
   display: inline-flex;
   align-items: center;
   border: 1px solid var(--color-grey-100);

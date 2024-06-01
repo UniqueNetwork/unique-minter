@@ -6,15 +6,26 @@ import { KeyringWallet } from '@app/account/KeyringWallet';
 import { MetamaskWallet } from '@app/account/MetamaskWallet';
 import { BaseWalletType } from '@app/account/type';
 
-export type ConnectedWalletsName = 'polkadot' | 'keyring' | 'metamask';
+export type ConnectedWalletsName =
+  | 'polkadot-js'
+  | 'keyring'
+  | 'metamask'
+  | 'talisman'
+  | 'subwallet-js'
+  | 'enkrypt'
+  | 'novawallet';
 
 const wallets = new Map<
   ConnectedWalletsName,
   typeof PolkadotWallet | typeof KeyringWallet | typeof MetamaskWallet
 >([
-  ['polkadot', PolkadotWallet],
+  ['polkadot-js', PolkadotWallet],
   ['keyring', KeyringWallet],
   ['metamask', MetamaskWallet],
+  ['talisman', PolkadotWallet],
+  ['subwallet-js', PolkadotWallet],
+  ['enkrypt', PolkadotWallet],
+  ['novawallet', PolkadotWallet],
 ]);
 
 export const CONNECTED_WALLET_TYPE = 'connected-wallet-type';
@@ -27,7 +38,10 @@ export const useWalletCenter = (chainProperties: ChainPropertiesResponse) => {
   const connectWallet = useCallback(
     async (typeWallet: ConnectedWalletsName) => {
       try {
-        const wallet = new (wallets.get(typeWallet)!)(chainProperties);
+        const wallet = new (wallets.get(typeWallet)!)(
+          chainProperties,
+          typeWallet !== 'keyring' && typeWallet !== 'metamask' ? typeWallet : undefined,
+        );
         const currentWallets = await wallet.getAccounts();
 
         const connectedWallets =

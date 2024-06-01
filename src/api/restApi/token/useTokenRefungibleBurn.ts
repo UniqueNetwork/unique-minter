@@ -9,13 +9,7 @@ export const useTokenRefungibleBurn = () => {
   const { api } = useApi();
   const { selectedAccount } = useAccounts();
 
-  const defaultTokensTransfer = useExtrinsicMutation<
-    BurnRefungibleBody,
-    BurnRefungibleParsed
-  >(
-    // @ts-ignore
-    api.refungible.burn,
-  );
+  const defaultTokensTransfer = useExtrinsicMutation(api.refungible.burn);
   const metamaskTokensBurn = useMetamaskBurnRefungibleToken();
 
   if (selectedAccount?.name === MetamaskAccountName) {

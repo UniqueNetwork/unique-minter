@@ -34,6 +34,9 @@ declare type Config = {
 declare global {
   interface Window {
     ENV: Env;
+    walletExtension?: {
+      isNovaWallet?: boolean;
+    };
   }
 }
 

@@ -1,4 +1,4 @@
-import { ChainPropertiesResponse, Sdk } from '@unique-nft/sdk';
+import Sdk, { ChainPropertiesResponse } from '@unique-nft/sdk';
 import { useQueries, UseQueryResult } from 'react-query';
 
 import { NetworkType } from '@app/types';
@@ -15,7 +15,7 @@ export const useChainProperties = (chains: chains[]) => {
     chains.map(({ api, network }) => {
       return {
         queryKey: queryKeys.chain.properties(network),
-        queryFn: () => new Sdk({ baseUrl: api, signer: null }).chain.properties(),
+        queryFn: () => new Sdk({ baseUrl: api }).common.chainProperties,
       };
     }),
   );

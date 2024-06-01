@@ -7,6 +7,7 @@ import {
   ExtrinsicResultResponse,
   SetPropertyPermissionsBody,
   SetPropertyPermissionsParsed,
+  WithOptionalAddress,
 } from '@unique-nft/sdk';
 
 import { useMetamaskFee } from './useMetamaskFee';
@@ -18,7 +19,9 @@ export function useMetamaskCollectionSetTokenPropertyPermissions() {
   const [submitWaitResultError, setSubmitWaitResultError] = useState<string>();
   const [isLoadingSubmitResult, setIsLoadingSubmitResult] = useState(false);
   const getEstimateGas = useCallback(
-    async ({ collectionId }: SetPropertyPermissionsBody) => {
+    async ({
+      collectionId,
+    }: Omit<SetPropertyPermissionsBody, 'address'> & WithOptionalAddress) => {
       const nftFactory = await UniqueNFTFactory(collectionId, provider?.getSigner());
 
       const estimateGas = await nftFactory.estimateGas.setTokenPropertyPermissions([]);

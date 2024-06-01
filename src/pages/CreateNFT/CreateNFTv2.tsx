@@ -380,21 +380,6 @@ export const CreateNFTv2Component: FC<{ className?: string }> = ({ className }) 
                   selectedAll();
                 }}
               />
-              {/* <SelectCheckbox
-                label={
-                  <Typography color="grey-500">
-                    {selected.length ? `${selected.length} selected` : 'Select all'}
-                  </Typography>
-                }
-                checked={selected.length > 0}
-                onChange={(value) => {
-                  if (value) {
-                    selectedAll();
-                    return;
-                  }
-                  deselectedAll();
-                }}
-              /> */}
               {deviceSize <= DeviceSize.sm && (
                 <ConfirmBtn
                   role="outlined"
@@ -403,14 +388,14 @@ export const CreateNFTv2Component: FC<{ className?: string }> = ({ className }) 
                 />
               )}
               <ConfirmBtn
-                className={selected.length > 1 ? 'visible' : 'hidden'}
+                className={selected.length > 0 ? 'visible' : 'hidden'}
                 role="outlined"
                 disabled={selected.length === 0}
                 title="Modify selected"
                 onClick={() => setDialog(CreateTokenDialog.editAttributes)}
               />
               <ConfirmBtn
-                className={selected.length > 1 ? 'visible' : 'hidden'}
+                className={selected.length > 0 ? 'visible' : 'hidden'}
                 role="danger"
                 disabled={selected.length === 0}
                 title="Remove selected"
@@ -442,7 +427,8 @@ export const CreateNFTv2Component: FC<{ className?: string }> = ({ className }) 
           onConfirm={onConfirmDialog}
         />
         <StatusTransactionModal
-          isVisible={isLoadingSubmitResult}
+          title={stage === 'done' ? 'Tokens successfully created' : 'Please wait'}
+          isVisible={true && isLoadingSubmitResult}
           stage={stage}
           uploadingProgress={uploadProgress}
           mintingProgress={mintingProgress}

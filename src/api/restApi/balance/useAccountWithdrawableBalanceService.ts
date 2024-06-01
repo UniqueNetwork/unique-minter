@@ -1,5 +1,6 @@
 import { QueriesResults, useQueries } from 'react-query';
-import { AllBalancesResponse, Sdk } from '@unique-nft/sdk';
+import { AllBalancesResponse } from '@unique-nft/sdk';
+import { Sdk } from '@unique-nft/sdk/full';
 import { Address } from '@unique-nft/utils';
 import { useCallback } from 'react';
 
@@ -21,7 +22,7 @@ export const useAccountWithdrawableBalancesService = (
             return Promise.resolve(undefined);
           }
           try {
-            const api = new Sdk({ baseUrl, signer: null });
+            const api = new Sdk({ baseUrl });
 
             const balance = await api.balance.get({
               address: Address.mirror.substrateToEthereum(address),

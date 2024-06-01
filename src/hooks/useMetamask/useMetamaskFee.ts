@@ -1,14 +1,14 @@
 import { BN, hexToBigInt } from '@polkadot/util';
 import { useCallback, useState } from 'react';
-import { FeeResponse } from '@unique-nft/sdk';
+import { FeeResponse, WithOptionalAddress } from '@unique-nft/sdk';
 import { UseMutateAsyncFunction } from 'react-query';
 
 import { formatKusamaBalance, truncateDecimalsBalanceSheet } from '@app/utils';
 import { MetamaskDefaultDecimals } from '@app/account/MetamaskWallet';
-import { usePropertiesService } from '@app/api';
 
-export const useMetamaskFee = <P>(estimateGasMethod: (params: P) => Promise<BN>) => {
-  const properties = usePropertiesService();
+export const useMetamaskFee = <P>(
+  estimateGasMethod: (params: Omit<P, 'address'> & WithOptionalAddress) => Promise<BN>,
+) => {
   const [fee, setFee] = useState<string>();
   const [gas, setGas] = useState<BN>();
   const [gasPrice, setGasPrice] = useState<BN>();
@@ -21,10 +21,10 @@ export const useMetamaskFee = <P>(estimateGasMethod: (params: P) => Promise<BN>)
   const getFee: UseMutateAsyncFunction<
     { fee: FeeResponse } | undefined,
     Error,
-    P,
+    Omit<P, 'address'> & WithOptionalAddress,
     unknown
   > = useCallback(
-    async (params: P) => {
+    async (params: Omit<P, 'address'> & WithOptionalAddress) => {
       setFeeLoading(true);
       const { request } = (window as any).ethereum;
       try {
@@ -60,6 +60,7 @@ export const useMetamaskFee = <P>(estimateGasMethod: (params: P) => Promise<BN>)
         return { fee };
       } catch (error: any) {
         setFeeError(error.message);
+        console.error(error);
         setFeeStatus('error');
       } finally {
         setFeeLoading(false);

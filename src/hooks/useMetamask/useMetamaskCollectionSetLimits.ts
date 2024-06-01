@@ -3,7 +3,11 @@ import { UniqueNFTFactory } from '@unique-nft/solidity-interfaces';
 import { ethers } from 'ethers';
 import { BN } from 'bn.js';
 import { UseMutateAsyncFunction } from 'react-query';
-import { ExtrinsicResultResponse, SetCollectionLimitsBody } from '@unique-nft/sdk';
+import {
+  ExtrinsicResultResponse,
+  SetCollectionLimitsBody,
+  WithOptionalAddress,
+} from '@unique-nft/sdk';
 
 import { useMetamaskFee } from './useMetamaskFee';
 
@@ -20,7 +24,11 @@ export function useMetamaskCollectionSetLimits() {
   const [isLoadingSubmitResult, setIsLoadingSubmitResult] = useState(false);
 
   const getEstimateGas = useCallback(
-    async ({ address, collectionId, limits }: SetCollectionLimitsBody) => {
+    async ({
+      address,
+      collectionId,
+      limits,
+    }: Omit<SetCollectionLimitsBody, 'address'> & WithOptionalAddress) => {
       const nftFactory = await UniqueNFTFactory(collectionId, provider?.getSigner());
 
       const estimateGas = await nftFactory.estimateGas.setCollectionLimit(

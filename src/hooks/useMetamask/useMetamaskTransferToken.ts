@@ -3,7 +3,7 @@ import { UniqueNFTFactory } from '@unique-nft/solidity-interfaces';
 import { ethers } from 'ethers';
 import { BN } from 'bn.js';
 import { UseMutateAsyncFunction } from 'react-query';
-import { ExtrinsicResultResponse } from '@unique-nft/sdk';
+import { ExtrinsicResultResponse, WithOptionalAddress } from '@unique-nft/sdk';
 
 import { TransferTokenBody, TransferTokenParsed } from '@app/types/Api';
 
@@ -41,11 +41,14 @@ export function useMetamaskTransferToken() {
     | {
         extrinsicError: ExtrinsicResultResponse<any>;
       },
-    { payload: TransferTokenBody; senderAddress?: string | undefined }
+    {
+      payload: Omit<TransferTokenBody, 'address'> & WithOptionalAddress;
+      senderAddress?: string | undefined;
+    }
   > = async ({
     payload,
   }: {
-    payload: TransferTokenBody;
+    payload: Omit<TransferTokenBody, 'address'> & WithOptionalAddress;
     senderAddress?: string | undefined;
   }) => {
     setIsLoadingSubmitResult(true);

@@ -3,7 +3,12 @@ import { UniqueNFTFactory } from '@unique-nft/solidity-interfaces';
 import { ethers } from 'ethers';
 import { BN } from 'bn.js';
 import { UseMutateAsyncFunction } from 'react-query';
-import { ExtrinsicResultResponse, BurnTokenParsed, BurnTokenBody } from '@unique-nft/sdk';
+import {
+  ExtrinsicResultResponse,
+  BurnTokenParsed,
+  BurnTokenBody,
+  WithOptionalAddress,
+} from '@unique-nft/sdk';
 
 import { useMetamaskFee } from './useMetamaskFee';
 import { getCrossStruct2 } from './utils';
@@ -16,7 +21,11 @@ export function useMetamaskBurnToken() {
   const [isLoadingSubmitResult, setIsLoadingSubmitResult] = useState(false);
 
   const getEstimateGas = useCallback(
-    async ({ address, collectionId, tokenId }: BurnTokenBody) => {
+    async ({
+      address,
+      collectionId,
+      tokenId,
+    }: Omit<BurnTokenBody, 'address'> & WithOptionalAddress) => {
       const nftFactory = await UniqueNFTFactory(collectionId, provider?.getSigner());
 
       const estimateGas = await nftFactory.estimateGas.burnFromCross(

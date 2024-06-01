@@ -1,5 +1,6 @@
 import { useQuery, UseQueryResult } from 'react-query';
-import { AllBalancesResponse, Sdk } from '@unique-nft/sdk';
+import { AllBalancesResponse } from '@unique-nft/sdk';
+import { Sdk } from '@unique-nft/sdk/full';
 
 import { useApi } from '@app/hooks';
 
@@ -13,11 +14,13 @@ export const useAccountBalanceService = (
   const { api, currentChain } = useApi();
 
   const getBalance = (address: string) => {
-    const apiSdk = networkURL ? new Sdk({ baseUrl: networkURL, signer: null }) : api;
+    const apiSdk = networkURL ? new Sdk({ baseUrl: networkURL }) : api;
 
     return apiSdk.balance
       .get({ address })
-      .then((balance) => Promise.resolve(calculateSliceBalance(balance)))
+      .then((balance: AllBalancesResponse) =>
+        Promise.resolve(calculateSliceBalance(balance)),
+      )
       .catch(Promise.reject);
   };
 

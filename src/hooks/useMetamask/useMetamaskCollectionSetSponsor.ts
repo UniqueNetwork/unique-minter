@@ -3,7 +3,11 @@ import { UniqueNFTFactory } from '@unique-nft/solidity-interfaces';
 import { ethers } from 'ethers';
 import { BN } from 'bn.js';
 import { UseMutateAsyncFunction } from 'react-query';
-import { ExtrinsicResultResponse, SetSponsorshipBody } from '@unique-nft/sdk';
+import {
+  ExtrinsicResultResponse,
+  SetSponsorshipBody,
+  WithOptionalAddress,
+} from '@unique-nft/sdk';
 import { Address } from '@unique-nft/utils';
 
 import { useMetamaskFee } from './useMetamaskFee';
@@ -16,7 +20,11 @@ export function useMetamaskCollectionSetSponsor() {
   const [isLoadingSubmitResult, setIsLoadingSubmitResult] = useState(false);
 
   const getEstimateGas = useCallback(
-    async ({ address, collectionId, newSponsor }: SetSponsorshipBody) => {
+    async ({
+      address,
+      collectionId,
+      newSponsor,
+    }: Omit<SetSponsorshipBody, 'address'> & WithOptionalAddress) => {
       const nftFactory = await UniqueNFTFactory(collectionId, provider?.getSigner());
 
       const toCross = Address.extract.ethCrossAccountId(newSponsor);

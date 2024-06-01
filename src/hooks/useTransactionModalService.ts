@@ -1,7 +1,11 @@
 import { DeepPartial, FieldValues, useForm, useWatch } from 'react-hook-form';
 import { useDebounce } from 'use-debounce';
 import { useEffect } from 'react';
-import { ExtrinsicResultResponse, FeeResponse } from '@unique-nft/sdk';
+import {
+  ExtrinsicResultResponse,
+  FeeResponse,
+  WithOptionalAddress,
+} from '@unique-nft/sdk';
 import { UseMutateAsyncFunction } from 'react-query';
 
 import { useNotifications } from '@app/components';
@@ -19,7 +23,7 @@ type UseTransactionModalServiceProps<R, D, F extends FieldValues> = {
         }
       | undefined,
       Error,
-      D,
+      Omit<D, 'address'> & WithOptionalAddress,
       unknown
     >;
     feeStatus: 'error' | 'loading' | 'idle' | 'success';
@@ -31,7 +35,10 @@ type UseTransactionModalServiceProps<R, D, F extends FieldValues> = {
       | {
           extrinsicError: ExtrinsicResultResponse<any>;
         },
-      { payload: D; senderAddress?: string | undefined }
+      {
+        payload: Omit<D, 'address'> & WithOptionalAddress;
+        senderAddress?: string | undefined;
+      }
     >;
     isLoadingSubmitResult: boolean;
     submitWaitResultError: string | undefined;

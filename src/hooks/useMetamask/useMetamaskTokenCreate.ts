@@ -3,7 +3,12 @@ import { UniqueNFTFactory } from '@unique-nft/solidity-interfaces';
 import { BigNumber, ethers } from 'ethers';
 import { BN } from 'bn.js';
 import { UseMutateAsyncFunction } from 'react-query';
-import { ExtrinsicResultResponse, CreateTokenBody, TokenId } from '@unique-nft/sdk';
+import {
+  ExtrinsicResultResponse,
+  CreateTokenBody,
+  TokenId,
+  WithOptionalAddress,
+} from '@unique-nft/sdk';
 import { Address } from '@unique-nft/utils';
 import {
   SchemaTools,
@@ -24,7 +29,13 @@ export function useMetamaskTokenCreate() {
   const { api } = useApi();
 
   const getEstimateGas = useCallback(
-    async ({ address, collectionId }: CreateTokenBody) => {
+    async ({
+      address,
+      collectionId,
+    }: Omit<CreateTokenBody, 'address'> & WithOptionalAddress) => {
+      if (!address) {
+        return new BN(0);
+      }
       const nftFactory = await UniqueNFTFactory(collectionId, provider?.getSigner());
 
       const toCross = Address.extract.ethCrossAccountId(address);
